@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package dslVersion="1.0.0.0" 
+        Id="34ae64b0-68b9-4859-860f-289692260a39" 
+        solutionId="34ae64b0-68b9-4859-860f-289692260a39" 
+        xmlns="http://schemas.microsoft.com/VisualStudio/2008/SharePointTools/PackageModel" 
+        name="FlynnBranding"
+        sharePointProductVersion="15.0">
+  <features>
+        <featureReference itemId="91f4db3d-739b-4189-9705-1d39d8a69604" />
+  </features>
+</package>
