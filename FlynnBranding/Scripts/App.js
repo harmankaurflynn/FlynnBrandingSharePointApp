@@ -35,25 +35,63 @@ Flynn.AddInInstall.HostWebSetup = function () {
             }
             createInfo.set_overwrite(true);
             createInfo.set_url(filename);
-            var files = hostWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl).get_files();
-            var file = files.add(createInfo);
+            
+           
+            var ofile = hostWebContext.get_web().getFileByServerRelativeUrl("/sites/AppModelTest/" + serverRelativeUrl + "/" + filename)
+            appWebContext.load(ofile);
+            appWebContext.executeQueryAsync(
+                Function.createDelegate(this, function () {
+                    /* File exists! */
+                    //alert('file exists');
+                    if (ofile.get_checkOutType() == 2) {
+                        ofile.checkOut();
+                        // Not checked out, do nothing
+                    }
+                    var files = hostWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl).get_files();
+                    var file = files.add(createInfo);
 
-            appWebContext.load(file, 'CheckOutType');
-            appWebContext.executeQueryAsync(function () {
-                // Success, see if file needs to be checked out
-                if (file.get_checkOutType() == 2) {
-                    // Not checked out, do nothing
-                } else {
-                    // Checked out
-                    file.checkIn('Add-in deployment.')
-                    file.publish('Add-in deployment.');
-                }
+                    appWebContext.load(file, 'CheckOutType');
+                    appWebContext.executeQueryAsync(function () {
+                        // Success, see if file needs to be checked out
+                        if (file.get_checkOutType() == 2) {
+                            // Not checked out, do nothing
+                        } else {
+                            // Checked out
+                            file.checkIn('Add-in deployment.')
+                            file.publish('Add-in deployment.');
+                        }
 
-                $('#fileDeployOutput').html('<font color=green><b>Files deployed successfully to host web.</b></font><br/>');
-            }, function (sender, args) {
-                // Failure
-                alert('Failed to provision file into host web. Error: ' + args.get_message());
-            });
+                        $('#fileDeployOutput').html('<font color=green><b>Files deployed successfully to host web.</b></font><br/>');
+                    }, function (sender, args) {
+                        // Failure
+                        alert('Failed to provision file into host web. Error: ' + args.get_message());
+                    });
+                }),
+                Function.createDelegate(this, function (sender, args) {
+                    /* File doesn't exist. */
+                    alert(args.get_message());
+                    var file = files.add(createInfo);
+
+                    appWebContext.load(file, 'CheckOutType');
+                    appWebContext.executeQueryAsync(function () {
+                        // Success, see if file needs to be checked out
+                        if (file.get_checkOutType() == 2) {
+                            // Not checked out, do nothing
+                        } else {
+                            // Checked out
+                            file.checkIn('Add-in deployment.')
+                            file.publish('Add-in deployment.');
+                        }
+
+                        $('#fileDeployOutput').html('<font color=green><b>Files deployed successfully to host web.</b></font><br/>');
+                    }, function (sender, args) {
+                        // Failure
+                        alert('Failed to provision file into host web. Error: ' + args.get_message());
+                    });
+                })
+                );
+           
+           
         },
       deleteCustomAction = function () {
         
@@ -77,7 +115,7 @@ Flynn.AddInInstall.HostWebSetup = function () {
               var ocustom = oUserCustomAction;
               //alert(oUserCustomAction.get_title());
               if (oUserCustomAction.get_title() == 'jquery' || oUserCustomAction.get_title() == 'leftnavjs' || oUserCustomAction.get_title() == 'responsivecss' ||
-                  oUserCustomAction.get_title() == 'normalizecss' || oUserCustomAction.get_title() == 'fontawesome') {
+                  oUserCustomAction.get_title() == 'normalizecss' || oUserCustomAction.get_title() == 'fontawesome' || oUserCustomAction.get_title() == 'businessdataaccess' || oUserCustomAction.get_title() == 'utilityjs') {
                   oUserCustomAction.deleteObject();
                   appWebContext.load(oUserCustomAction);
                   appWebContext.executeQueryAsync(Function.createDelegate(this, this.onQuerySucceeded), Function.createDelegate(this, this.onQueryFailed));
@@ -116,8 +154,11 @@ Flynn.AddInInstall.HostWebSetup = function () {
 
              .done(function (first_call, second_call, third_call) {
                  activateUserCustomAction(10023, 'jquery-1.9.1.min.js', "jquery", false);
-                 activateUserCustomAction(10023, 'businessDataAccess.js', "businessdataaccess", false);
-                 activateUserCustomAction(10024, 'LeftNavigationMenu.js', "leftnavjs", false);
+                 activateUserCustomAction(10024, 'utility.js', "utilityjs", false);
+                
+                 activateUserCustomAction(10026, 'storageManager.js', "storageManagerjs", false);
+                 activateUserCustomAction(10027, 'businessDataAccess.js', "businessdataaccess", false);
+                 activateUserCustomAction(10028, 'leftNavMenu.js', "leftnavjs", false);
                  // activateUserCustomAction(10025, 'vertical-responsive-menu.css',"responsivecss",true);
                   //activateUserCustomAction(10026, 'font-awesome.css',"fontawesome",true);
                  //activateUserCustomAction(10027, 'normalize.css',"normalizecss",true);
@@ -206,8 +247,11 @@ Flynn.AddInInstall.HostWebSetup = function () {
 
             // Provision these three files to the host web's Style Library and activate user custom action for each one
            
-            readFileFromAppWebAndProvisionToHost('Scripts', 'LeftNavigationMenu.js');
+            readFileFromAppWebAndProvisionToHost('Scripts', 'leftNavMenu.js');
             readFileFromAppWebAndProvisionToHost('Scripts', 'jQuery-1.9.1.min.js');
+            readFileFromAppWebAndProvisionToHost('Scripts', 'utility.js');
+            readFileFromAppWebAndProvisionToHost('Scripts', 'storageManager.js');
+            readFileFromAppWebAndProvisionToHost('Scripts', 'businessDataAccess.js');
             readFileFromAppWebAndProvisionToHost('Content', 'font-awesome.css');
             readFileFromAppWebAndProvisionToHost('Content', 'normalize.css');
            readFileFromAppWebAndProvisionToHost('Content', 'vertical-responsive-menu.css');

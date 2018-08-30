@@ -6,8 +6,10 @@
     <File Path="Scripts\jquery-1.9.1.min.js" Url="Scripts/jquery-1.9.1.min.js" ReplaceContent="TRUE" />
     <File Path="Scripts\jquery-1.9.1.js" Url="Scripts/jquery-1.9.1.js" ReplaceContent="TRUE" />
     <File Path="Scripts\jquery-1.9.1.intellisense.js" Url="Scripts/jquery-1.9.1.intellisense.js" ReplaceContent="TRUE" />
-    <File Path="Scripts\LeftNavigationMenu.js" Url="Scripts/LeftNavigationMenu.js" ReplaceContent="TRUE" />
+    <File Path="Scripts\leftNavMenu.js" Url="Scripts/leftNavMenu.js" ReplaceContent="TRUE" />
     <File Path="Scripts\businessDataAccess.js" Url="Scripts/businessDataAccess.js" ReplaceContent="TRUE" />
     <File Path="Scripts\utility.js" Url="Scripts/utility.js" ReplaceContent="TRUE" />
+    <File Path="Scripts\storageManager.js" Url="Scripts/storageManager.js" ReplaceContent="TRUE" />
+    <File Path="Scripts\userInfo.js" Url="Scripts/userInfo.js" ReplaceContent="TRUE" />
   </Module>
 </Elements>

@@ -65,7 +65,9 @@
     <Content Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
-    <Content Include="Scripts\LeftNavigationMenu.js" />
+    <Content Include="Scripts\leftNavMenu.js" />
+    <Content Include="Scripts\storageManager.js" />
+    <Content Include="Scripts\userInfo.js" />
     <Content Include="Scripts\utility.js" />
     <Content Include="Scripts\_references.js" />
   </ItemGroup>

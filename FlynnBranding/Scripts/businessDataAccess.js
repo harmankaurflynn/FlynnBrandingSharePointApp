@@ -1,5 +1,5 @@
 ﻿'use strict'
-// include utility.js
+//include utility.js
 
 var ns = CreateNamespace('FlynnBranding');
 
@@ -47,11 +47,13 @@ ns.BusinessDataAccess = function () { };
 // - Url: (string) Target Url
 // - Desc: (string) Description (tooltip)
 ns.BusinessDataAccess.NavLinkType = "NavLink";
-ns.BusinessDataAccess.NavLink = function (title, url, desc) {
+ns.BusinessDataAccess.NavLink = function (title, url, desc,parent,order) {
     this.Type = ns.BusinessDataAccess.NavLinkType;
     this.Title = title;
     this.Url = url;
     this.Desc = desc;
+    this.Parent = parent;
+    this.Order=order
 };
 // A NavHeader represents a container for a group of Nav Nodes (links and/or headers)
 // - A NavHeader must have a title
@@ -243,19 +245,22 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
     var deferred = $.Deferred();
 
     // Mega Menu data is global; we can use the global storage key.
-    var storageKey = ns.BusinessDataAccess.LeftNavigationStorageKey;
+    var storageKey = ns.BusinessDataAccess.LeftNavMenuStorageKey;
 
     // If null, the BDO is not in storage; otherwise, storageItem.data holds the BDO and storageItem.hasExpired indicates freshness 
     // By design, we store/return a stale BDO if an exception occurs while building the fresh BDO; doing so allows the control to 
     // continue showing reasonable content; it also prevents a cascade of data source call attempts/failures.
     var storageItem = null;
-
+   // alert("in business layer");
     try {
         // If storage is in play, request the BDO from storage
         if (ns.BusinessDataAccess.UseStorage(storageOptions)) {
+           // alert("use storage");
             // Return the BDO to the caller if it is still fresh; if the BDO is stale, keep it around in case we encounter an issue building a fresh BDO
             storageItem = ns.StorageManager.Get(storageOptions.storageMode, storageKey);
             if (storageItem && storageItem.hasExpired == false) {
+                // alert("expired");
+                console.log("not expired");
                 deferred.resolve(storageItem.data);
                 return deferred.promise();
             }
@@ -266,54 +271,164 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
         // construct the BDO for the control; for now, we simply demonstrate the use of sample/mock data...
         // TODO: map this into a custom list in SharePoint 
         var leftNavMenu = new ns.BusinessDataAccess.LeftNavMenuData();
+        // Query the Global Nav configuration list
 
-        for (var i = 0; i < 5; i++) {
-            leftNavMenu.Nodes[i] = new ns.BusinessDataAccess.NavHeader("Mega Tab " + (i + 1), null, "This is a heading node that has no target Url; it has children");
-            for (var j = 0; j < 9; j++) {
-                // Mark the first group of every even-numbered tab as "featured"
-                if (((i % 2) == 0) && j == 0) {
-                    leftNavMenu.Nodes[i].Nodes[j] = new ns.BusinessDataAccess.NavHeaderPlus(
-                        "Menu Group " + (j + 1) + " [Featured]", "http://msdn.microsoft.com",
-                        "This is a FEATURED heading node that has a target Url; it has no children",
-                        "/images/hilite.png"
-                        );
-                    leftNavMenu.Nodes[i].Nodes[j].Nodes[0] = new ns.BusinessDataAccess.NavLink("Phone Link", "tel:+1-212-555-0101", "This is a link node that has a Phone target Url");
-                    leftNavMenu.Nodes[i].Nodes[j].Nodes[1] = new ns.BusinessDataAccess.NavLink("Email Link", "mailto:user@domain.com", "This is a link node that has an email target Url");
-                    continue;
+       // var queryText = '(Path:"' + ns.Configuration.PortalAdminSiteAbsoluteUrl + '/' + ns.Configuration.GlobalNavListWebRelativeUrl + '" AND contentclass=STS_ListItem_GenericList)';
+
+        var queryUrl = _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/GetByTitle('LeftNavigation')/items?$filter=IsActive%20eq%201&$select=Title,MenuItem,TargetURL,SortOrder,ParentMenuItem/Id,ParentMenuItem/Title&$expand=ParentMenuItem";
+        console.log(queryUrl);
+
+
+
+        $.ajax({
+
+            url: queryUrl,
+
+            method: "GET",
+
+            headers: { "ACCEPT": "application/json;odata=verbose" },
+
+            cache: false
+
+        })
+
+        .done(function (data)
+
+        {
+            //alert("got ajax done");
+            ns.LogMessage('ns.BusinessDataManager.LeftNavMenuData(): processing data response');
+
+
+
+            //  construct the BDO for the control
+
+            var leftNav = new ns.BusinessDataAccess.LeftNavMenuData();
+
+            
+            var odataResults = data.d.results;
+
+            
+
+            if (odataResults && odataResults.length>0)
+
+            {
+               // alert("length greater");
+                var results = odataResults;
+
+                var numResults = results.length;
+
+                ns.LogMessage('ns.BusinessDataManager.LeftNavMenuData(): ' + numResults + ' results returned');
+
+                for (var i = 0; i < numResults; i++)
+
+                {
+
+                    var result = results[i];
+
+                   
+
+                    var linkText = result.Title;
+
+                    var linkUrl = result.TargetURL;
+                    var parentNode = result.ParentMenuItem.Title;
+                    var sortOrder=result.SortOrder
+
+
+
+                    // For now, the nav data is simply a collection of Nav Links with no Nav Headers
+
+                    leftNav.Nodes[i] = new ns.BusinessDataAccess.NavLink(linkText, linkUrl, null,parentNode,sortOrder);
+
                 }
-                var hasLink = ((j % 3) > 0);        // every 3rd group has no link
-                var hasChildren = ((j % 4) > 0);    // every 4th group has no children
 
-                var link = (hasLink) ? "http://msdn.microsoft.com" : null;
-                var desc = "This is a heading node that has " + ((hasLink) ? "a " : "no ") + "target Url; it has " + ((hasChildren) ? "" : "no ") + "children";
-
-                leftNavMenu.Nodes[i].Nodes[j] = new ns.BusinessDataAccess.NavHeader("Menu Group " + (j + 1), link, desc);
-
-                if (hasChildren) {
-                    for (var k = 0; k < 3; k++) {
-                        leftNavMenu.Nodes[i].Nodes[j].Nodes[k] = new ns.BusinessDataAccess.NavLink("Menu Link " + (k + 1), "http://msdn.microsoft.com", "This is a link node that has a target Url");
-                    }
-                }
             }
+
+            else
+
+            {
+                //alert("no data");
+
+                ns.LogMessage('ns.BusinessDataManager.GetGlobalNavData(): no results returned');
+
+                // No results is a valid result; cache a default/empty BDO
+
+                leftNav = new ns.BusinessDataAccess.LeftNavMenuData();
+
+            }
+
+
+
+            // If storage is in play, store the resulting BDO and return it to the caller
+
+            if (ns.BusinessDataAccess.UseStorage(storageOptions))
+
+            {
+
+                ns.StorageManager.Set(storageOptions.storageMode, storageKey, leftNav, storageOptions.useSlidingExpiration, storageOptions.timeout);
+
+            }
+
+            deferred.resolve(leftNav);
+
+        })
+
+        .fail(function (xhr, status, error)
+
+        {
+            alert("error" + error);
+
+            ns.LogError('ns.BusinessDataManager.GetGlobalNavData(): failed to get data - Status=' + status + '; error=' + error);
+
+            if (storageItem)
+
+            {
+
+                // Store the stale BDO and return it to the caller; doing so provides reasonable display content and prevents a cascade of data source call attempts/failures.
+
+                ns.LogWarning('ns.BusinessDataManager.GetGlobalNavData(): storing/returning stale data as a fallback');
+
+                ns.StorageManager.Set(storageOptions.storageMode, storageKey, storageItem.data, storageOptions.useSlidingExpiration, storageOptions.timeout);
+
+            }
+
+            // return the stale BDO if present; otherwise, return a null BDO and let the caller decide what to render
+
+            // TODO: instead of returning null, consider returning an ErrorData BDO if you wish to pass verbose error data to the caller.
+
+            deferred.resolve(storageItem ? storageItem.data : null);
+
+        });
+
+    }
+
+    catch (ex)
+
+    {
+        alert("catch" + ex.message);
+
+        ns.LogError('ns.BusinessDataManager.GetGlobalNavData(): unexpected exception occurred; error=' + ex.message);
+
+        if (storageItem)
+
+        {
+
+            // Store the stale BDO and return it to the caller; doing so provides reasonable display content and prevents a cascade of data source call attempts/failures.
+
+            ns.LogWarning('ns.BusinessDataManager.GetGlobalNavData(): storing/returning stale data as a fallback');
+
+            ns.StorageManager.Set(storageOptions.storageMode, storageKey, storageItem.data, storageOptions.useSlidingExpiration, storageOptions.timeout);
+
         }
 
-        // If storage is in play, store the resulting BDO and return it to the caller
-        if (ns.BusinessDataAccess.UseStorage(storageOptions)) {
-            ns.StorageManager.Set(storageOptions.storageMode, storageKey, leftNavMenu, storageOptions.useSlidingExpiration, storageOptions.timeout);
-        }
-        deferred.resolve(leftNavMenu);
-    }
-    catch (ex) {
-        ns.LogError('ns.BusinessDataAccess.GetMegaMenuData(): unexpected exception occurred; error=' + ex.message);
-        if (storageItem) {
-            // Store the stale BDO and return it to the caller; doing so provides reasonable display content and prevents a cascade of data source call attempts/failures.
-            ns.LogWarning('ns.BusinessDataAccess.GetMegaMenuData(): storing/returning stale data as a fallback');
-            ns.StorageManager.Set(storageOptions.storageMode, storageKey, storageItem.data, storageOptions.useSlidingExpiration, storageOptions.timeout);
-        }
         // return the stale BDO if present; otherwise, return a null BDO and let the caller decide what to render
+
         // TODO: instead of returning null, consider returning an ErrorData BDO if you wish to pass verbose error data to the caller.
+
         deferred.resolve(storageItem ? storageItem.data : null);
+
     }
+
+      
     return deferred.promise();
 };
 /// Consumes and persists an updated lightweight JSON Business Data Object for the Mega Menu control
