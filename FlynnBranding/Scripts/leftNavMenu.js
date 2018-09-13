@@ -90,6 +90,8 @@ ns.LeftNav.GetContents = function ()
 
     var fallbackHtml = currentHtml;
 
+    $('#DeltaPlaceHolderMain').addClass('wrapper');
+
 
 
     // If current control content is not present, use default Html; optionally, insert a progress indicator while we request the BDO for the control. 
@@ -149,7 +151,7 @@ ns.LeftNav.GetContents = function ()
 
                 //  construct the content HTML for the control using the data returned in the BDO
 
-                var contentHtml = "<header class=\"header clearfix\"><button type=\"button\" id=\"toggleMenu\" class=\"toggle_menu\"><iclass=\"fa fa-bars\"></i></button></header>"+
+                var contentHtml = "<header class=\"header clearfix\"><button type=\"button\" id=\"toggleMenu\" class=\"toggle_menu\"><i class=\"fa fa-bars\"></i></button></header>"+
                     "<nav class=\"vertical_nav\">"+
                     "<ul id=\"js-menu\" class=\"menu\">";
                    
@@ -309,7 +311,8 @@ ns.LeftNav.GetContents = function ()
 
 
 
-var applyCSS=(function () {
+var applyCSS = (function () {
+    
    
     if (document.readyState !== 'complete') {
         alert(document.readyState);
@@ -318,10 +321,12 @@ var applyCSS=(function () {
     }
     else {
         // clearInterval( tid );
+        var siteURL = window.location.protocol + "//" + window.location.host + _spPageContextInfo.siteServerRelativeUrl;
 
-        $("head").append("<link rel='stylesheet' href='https://dspdev05webapp.flynncompanies.com/sites/AppModelTest/Style%20Library/font-awesome.css' type='text/css' >");
-        $("head").append("<link rel='stylesheet' href='https://dspdev05webapp.flynncompanies.com/sites/AppModelTest/Style%20Library/vertical-responsive-menu.css' type='text/css' >");
-        $("head").append("<link rel='stylesheet' href='https://dspdev05webapp.flynncompanies.com/sites/AppModelTest/Style%20Library/normalize.css' type='text/css' >");
+        $("head").append("<link rel='stylesheet' href='"+siteURL+"/Style%20Library/font-awesome.css' type='text/css' >");
+        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/vertical-responsive-menu.css' type='text/css' >");
+        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/normalize.css' type='text/css' >");
+        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/flynnbranding.css' type='text/css' >");
         var querySelector = document.querySelector.bind(document);
 
         var nav = document.querySelector('.vertical_nav');

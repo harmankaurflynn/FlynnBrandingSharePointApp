@@ -70,6 +70,7 @@ Flynn.AddInInstall.HostWebSetup = function () {
                 Function.createDelegate(this, function (sender, args) {
                     /* File doesn't exist. */
                     alert(args.get_message());
+                    var files = hostWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl).get_files();
                     var file = files.add(createInfo);
 
                     appWebContext.load(file, 'CheckOutType');
@@ -115,7 +116,7 @@ Flynn.AddInInstall.HostWebSetup = function () {
               var ocustom = oUserCustomAction;
               //alert(oUserCustomAction.get_title());
               if (oUserCustomAction.get_title() == 'jquery' || oUserCustomAction.get_title() == 'leftnavjs' || oUserCustomAction.get_title() == 'responsivecss' ||
-                  oUserCustomAction.get_title() == 'normalizecss' || oUserCustomAction.get_title() == 'fontawesome' || oUserCustomAction.get_title() == 'businessdataaccess' || oUserCustomAction.get_title() == 'utilityjs') {
+                  oUserCustomAction.get_title() == 'normalizecss' || oUserCustomAction.get_title() == 'fontawesome' || oUserCustomAction.get_title() == 'businessdataaccess' || oUserCustomAction.get_title() == 'utilityjs' ||  oUserCustomAction.get_title() == 'flynnbrandingcss') {
                   oUserCustomAction.deleteObject();
                   appWebContext.load(oUserCustomAction);
                   appWebContext.executeQueryAsync(Function.createDelegate(this, this.onQuerySucceeded), Function.createDelegate(this, this.onQueryFailed));
@@ -159,9 +160,12 @@ Flynn.AddInInstall.HostWebSetup = function () {
                  activateUserCustomAction(10026, 'storageManager.js', "storageManagerjs", false);
                  activateUserCustomAction(10027, 'businessDataAccess.js', "businessdataaccess", false);
                  activateUserCustomAction(10028, 'leftNavMenu.js', "leftnavjs", false);
-                 // activateUserCustomAction(10025, 'vertical-responsive-menu.css',"responsivecss",true);
-                  //activateUserCustomAction(10026, 'font-awesome.css',"fontawesome",true);
-                 //activateUserCustomAction(10027, 'normalize.css',"normalizecss",true);
+
+                
+                 // activateUserCustomAction(10029, 'vertical-responsive-menu.css',"responsivecss",true);
+                  //activateUserCustomAction(10030, 'font-awesome.css',"fontawesome",true);
+                  //activateUserCustomAction(10031, 'normalize.css', "normalizecss", true);
+                  //activateUserCustomAction(10032, 'flynnbranding.css', "flynnbrandingcss", true);
 
                  appWebContext.load(hostWebCustomActions);
                  appWebContext.executeQueryAsync(onActivateSuccess, onActivateError);
@@ -253,6 +257,7 @@ Flynn.AddInInstall.HostWebSetup = function () {
             readFileFromAppWebAndProvisionToHost('Scripts', 'storageManager.js');
             readFileFromAppWebAndProvisionToHost('Scripts', 'businessDataAccess.js');
             readFileFromAppWebAndProvisionToHost('Content', 'font-awesome.css');
+            readFileFromAppWebAndProvisionToHost('Content', 'flynnbranding.css');
             readFileFromAppWebAndProvisionToHost('Content', 'normalize.css');
            readFileFromAppWebAndProvisionToHost('Content', 'vertical-responsive-menu.css');
             activateLeftNav();

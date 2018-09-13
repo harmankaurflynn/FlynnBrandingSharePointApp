@@ -6,5 +6,6 @@
     <ProjectItemFile Source="font-awesome.css" Target="Content\" Type="ElementFile" />
     <ProjectItemFile Source="normalize.css" Target="Content\" Type="ElementFile" />
     <ProjectItemFile Source="vertical-responsive-menu.css" Target="Content\" Type="ElementFile" />
+    <ProjectItemFile Source="flynnbranding.css" Target="Content\" Type="ElementFile" />
   </Files>
 </ProjectItem>
