@@ -37,10 +37,7 @@ $(window).load(function () {
 
                            // $("#sideNavBox").empty();
 
-                            //$("#sideNavBox").append("<header class='header clearfix'><button type='button' id='toggleMenu'class='toggle_menu'><iclass='fa fa-bars'></i></button></header><nav class='vertical_nav'><ul id='js-menu' class='menu'><li class='menu--item  menu--item__has_sub_menu'><label class='menu--link' title='Safety Policies'><i class='menu--icon  fa fa-fw fa-user'></i><span class='menu--label'>Safety Policies</span></label><ul class='sub_menu'><li class='sub_menu--item'><a href='http://google.com' target='_blank' class='sub_menu--link sub_menu--link__active'>Submenu</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Submenu</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Submenu</a></li></ul></li><li class='menu--item'><a href='#' class='menu--link' title='Health & Safety Management'><i class='menu--icon  fa fa-fw fa-briefcase'></i><span class='menu--label'>Health & Safety Management</span></a></li><li class='menu--item'><a href='#' class='menu--link' title='Safe Work Procedures'><i class='menu--icon  fa fa-fw fa-cog'></i><span class='menu--label'>Safe Work Procedures</span></a></li><li class='menu--item  menu--item__has_sub_menu'><label class='menu--link' title='Corporate'><i class='menu--icon  fa fa-fw fa-database'></i><span class='menu--label'>Corporate</span></label><ul class='sub_menu'><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Executive Safety Team</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Communications</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Health & Safety Department</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Safety Recognition</a></li></ul></li><li class='menu--item  menu--item__has_sub_menu'><label class='menu--link' title='Region/Branch'><i class='menu--icon  fa fa-fw fa-database'></i><span class='menu--label'>Region/Branch</span></label><ul class='sub_menu'><li class='sub_menu--item'><a href='#' class='sub_menu--link'>HS Plan</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>HS Annual Goals</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Safety Reviews</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Reporting(KPI)</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>JHS Committees</a></li></ul></li><li class='menu--item  menu--item__has_sub_menu'><label class='menu--link' title='Region/Branch'><i class='menu--icon  fa fa-fw fa-database'></i><span class='menu--label'>Site/Project</span></label><ul class='sub_menu'><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Site HS Plan</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Hazard Analysis</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Flynn Stores</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Competency</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Subcontractor Management</a></li><li class='sub_menu--item'><a href='#' class='sub_menu--link'>Incident/Case Management</a></li></ul></li><li class='menu--item'><a href='#' class='menu--link' title='Care'><i class='menu--icon  fa fa-fw fa-briefcase'></i><span class='menu--label'>Care</span></a></li><li class='menu--item'><a href='#' class='menu--link' title='Safety Day'><i class='menu--icon  fa fa-fw fa-briefcase'></i><span class='menu--label'>Safety Day</span></a></li><li class='menu--item'><a href='#' class='menu--link' title='Flynn Family'><i class='menu--icon  fa fa-fw fa-briefcase'></i><span class='menu--label'>Flynn Family</span></a></li></ul><button id='collapse_menu' class='collapse_menu'><i class='collapse_menu--icon  fa fa-fw'></i><span class='collapse_menu--label'>Recolher menu</span></button></nav>");
-
-
-                            
+                                                  
 
                         }
 
@@ -249,12 +246,53 @@ ns.LeftNav.GetContents = function ()
                                         linkUrl = this.Url.Url;
 
                                    
-                                    if (linkUrl == window.location.href)
-                                        listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link sub_menu--link__active\">" + linkText + "</a></li>";
+                                    //if (linkUrl == window.location.href)
+                                       // listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link sub_menu--link__active\">" + linkText + "</a></li>";
+                                   // else
+
+                                       // listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link\">" + linkText + "</a></li>";
+
+                                    var blHasSubSubMenu = false;
+                                    var leftNavSubSubMenu = leftNavData.Nodes.filter(function (p) { return p.Parent === linkText; });
+                                    if (leftNavSubSubMenu && leftNavSubSubMenu.length > 0)
+                                        blHasSubSubMenu = true;
+
+                                    if (blHasSubSubMenu)
+                                        listItemInfo +=
+                                        "<li class=\"sub_menu--item sub_menu--item__has_sub_menu\">"
                                     else
 
-                                        listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link\">" + linkText + "</a></li>";
+                                        listItemInfo +=
+                                      "<li class=\"sub_menu--item\">"
+                                    listItemInfo +=
+                                "<label class=\"menu--label\" title=\"" + linkText + "\">"
+                                    if (linkUrl == window.location.href)
+                                        listItemInfo += "<a href=\"" + linkUrl + "\"  class=\"sub_menu--link sub_menu--link__active\">" + linkText + "</a></label>";
+                                     else
+                                        listItemInfo += "<a href=\"" + linkUrl + "\"  class=\"sub_menu--link\">" + linkText + "</a></label>";
 
+                                    if (blHasSubSubMenu) {
+
+
+                                        listItemInfo +=
+                                        "<ul class=\"sub_sub_menu\">"
+
+                                        $.each(leftNavSubSubMenu, function () {
+                                            var linkText = this.Title;
+
+                                            var linkUrl = "#";
+
+                                            if (this.Url)
+                                                linkUrl = this.Url.Url;
+                                            if (linkUrl == window.location.href)
+                                                listItemInfo += "<li class=\"sub_sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_sub_menu--link sub_sub_menu--link__active\">" + linkText + "</a></li>";
+                                            else
+                                                listItemInfo += "<li class=\"sub_sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_sub_menu--link\">" + linkText + "</a></li>";
+                                        });
+                                        listItemInfo += "</ul>"
+                                    }
+
+                                    listItemInfo += "</li>"
                                 });
 
                                 listItemInfo += "</ul>"
@@ -365,6 +403,7 @@ var applyCSS = (function () {
         
 
         var subnavs = menu.querySelectorAll('.menu--item__has_sub_menu');
+        var subsubnavs=menu.querySelectorAll('.sub_menu--item__has_sub_menu');
 
         // Toggle menu click
         querySelector('.toggle_menu').onclick = function () {
@@ -385,6 +424,11 @@ var applyCSS = (function () {
 
             for (var j = 0; j < subnavs.length; j++) {
                 subnavs[j].classList.remove('menu--subitens__opened');
+            }
+
+
+            for (var j = 0; j < subsubnavs.length; j++) {
+                subsubnavs[j].classList.remove('sub_menu--subitens__opened');
             }
 
         };
@@ -422,9 +466,47 @@ var applyCSS = (function () {
             }
         }
 
+        for (var i = 0; i < subsubnavs.length; i++) {
+
+            if (subsubnavs[i].classList.contains('sub_menu--item__has_sub_menu')) {
+                
+               
+
+                subsubnavs[i].querySelector('.sub_menu--link').addEventListener('click', function (e) {
+
+                    for (var j = 0; j < subsubnavs.length; j++) {
+                        
+                        if (e.target.offsetParent != subsubnavs[j])
+                            subsubnavs[j].classList.remove('sub_menu--subitens__opened');
+                       
+
+                    }
+
+                    e.target.offsetParent.classList.toggle('sub_menu--subitens__opened');
+
+                }, false);
+
+                for (var j = 0; j < subsubnavs.length; j++) {
+                    // subnavs[j].classList.toggle('menu--subitens__opened');
+
+                }
+
+
+                var selectedLink = $('.sub_menu--link__active');
+
+
+            }
+        }
+
         var selectedLink = $('.sub_menu--link__active');
         if (selectedLink != null && selectedLink.length>0)
             selectedLink[0].parentNode.parentNode.parentNode.classList.toggle('menu--subitens__opened');
+
+        var selectedsubLink = $('.sub_sub_menu--link__active');
+        if (selectedsubLink != null && selectedsubLink.length > 0) {
+            selectedsubLink[0].parentNode.parentNode.parentNode.classList.toggle('sub_menu--subitens__opened');
+            selectedsubLink[0].parentNode.parentNode.parentNode.parentNode.parentNode.classList.toggle('menu--subitens__opened');
+        }
 
     }
 
