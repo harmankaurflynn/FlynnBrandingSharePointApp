@@ -43,12 +43,17 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="Content\Font\fontawesome-webfont.eot" />
+    <None Include="Content\Font\fontawesome-webfont.ttf" />
+    <None Include="Content\Font\fontawesome-webfont.woff" />
+    <None Include="Content\Font\fontawesome-webfont.woff2" />
     <None Include="packages.config" />
     <None Include="Pages\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{3b1cafc0-2460-47d1-930c-1b3cc55fc776}</SharePointProjectItemId>
     </None>
     <Content Include="Content\flynnbranding.css" />
     <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\Font\fontawesome-webfont.svg" />
     <Content Include="Content\normalize.css" />
     <Content Include="Content\vertical-responsive-menu.css" />
     <Content Include="Pages\Elements.xml" />

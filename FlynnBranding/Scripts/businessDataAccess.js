@@ -261,8 +261,8 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
             if (storageItem && storageItem.hasExpired == false) {
                 // alert("expired");
                 console.log("not expired");
-                deferred.resolve(storageItem.data);
-                return deferred.promise();
+               // deferred.resolve(storageItem.data);
+               // return deferred.promise();
             }
         }
 
@@ -275,7 +275,7 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
 
        // var queryText = '(Path:"' + ns.Configuration.PortalAdminSiteAbsoluteUrl + '/' + ns.Configuration.GlobalNavListWebRelativeUrl + '" AND contentclass=STS_ListItem_GenericList)';
 
-        var queryUrl = _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/GetByTitle('LeftNavigation')/items?$filter=IsActive%20eq%201&$select=Title,MenuItem,TargetURL,SortOrder,ParentMenuItem/Id,ParentMenuItem/Title&$expand=ParentMenuItem";
+        var queryUrl = _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/GetByTitle('LeftNavigation')/items?$filter=IsActive%20eq%201&$select=Title,MenuItem,TargetURL,SortOrder,ParentMenuItem/Id,ParentMenuItem/Title&$expand=ParentMenuItem&$orderby=SortOrder";
         console.log(queryUrl);
 
 

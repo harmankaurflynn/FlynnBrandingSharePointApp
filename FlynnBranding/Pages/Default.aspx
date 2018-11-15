@@ -16,6 +16,7 @@
     <link rel="Stylesheet" type="text/css" href="../Content/App.css" />
 
     <!-- Add your JavaScript to the following file -->
+
     <script type="text/javascript" src="../Scripts/App.js"></script>
 </asp:Content>
 
@@ -32,8 +33,13 @@
     </div>
 
     <div id="output">
+         <a href="#" id="lnkActivateLeftNav">Activate Left Navigation</a>
         <p id="fileDeployOutput"></p>
         <p id="activateOutput"></p>
+    </div>
+    <div id="divOutPutLeftNavRemoval">
+        <a href="#" id="lnkLeftNavRemove">Remove Left Navigation</a>
+        <p id="leftNavRemovalOutput"></p>
     </div>
 
 </asp:Content>

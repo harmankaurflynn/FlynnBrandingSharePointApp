@@ -20,6 +20,8 @@ $(window).load(function () {
     $.getScript("/_layouts/15/MicrosoftAjax.js", function () {
         $.getScript("/_layouts/15/SP.Runtime.js", function () {
             $.getScript("/_layouts/15/SP.js", function () {
+
+             
                 //Type.registerNamespace('FlynnBranding');
                // FlynnBranding.LeftNavigation = FlynnBranding.LeftNavigation || {};
 
@@ -142,12 +144,16 @@ ns.LeftNav.GetContents = function ()
 
         ns.BusinessDataAccess.GetLeftNavMenuData({ storageMode: ns.StorageManager.DurableStorageMode, useSlidingExpiration: false, timeout: ns.LeftNav.ExpirationTimeoutInMinutes }).then(
 
+            
 
 
             function (leftNavData)
 
             {
                
+                var currentUrl = window.location.href;
+                if (currentUrl.indexOf('/') > 0)
+                    currentUrl = currentUrl.substring(currentUrl.indexOf('/') + 1);
 
                 //  construct the content HTML for the control using the data returned in the BDO
 
@@ -176,6 +182,8 @@ ns.LeftNav.GetContents = function ()
                    // alert("left nav not null");
                     // We have received a valid BDO; update the control instance with the BDO data.
 
+                    var nodeIndex=0;
+
                     if (leftNavData.Nodes.length > 0)
 
                     {
@@ -191,7 +199,12 @@ ns.LeftNav.GetContents = function ()
 
                             var linkText = this.Title;
 
-                            var linkUrl = this.Url;
+                            var linkUrl = "#";
+
+                            if (this.Url)
+                                linkUrl = this.Url.Url;
+
+                            
                             var blHasSubMenu = false;
                             //var leftNavSubMenu = leftNavData.Nodes.filter(p => (p.Parent == this.Title));
                             var leftNavSubMenu = leftNavData.Nodes.filter(function (p) { return p.Parent === linkText; });
@@ -202,14 +215,23 @@ ns.LeftNav.GetContents = function ()
                                 listItemInfo +=
                               "<li class=\"menu--item  menu--item__has_sub_menu\">"
                             else
+                                
                                 listItemInfo +=
                               "<li class=\"menu--item\">"
 
 
+                            if (nodeIndex == 0)
+                                listItemInfo +=
+                               "<label class=\"menu--label menu--label__home\" title=\"" + linkText + "\"><i class=\"menu--icon  fa fa-fw fa-user\"></i>"
+                                else
                             listItemInfo +=
-                                "<label class=\"menu--link\" title=\"" + linkText + "\"><i class=\"menu--icon  fa fa-fw fa-user\"></i><span class=\"menu--label\">" + linkText + "</span></label>"
+                                "<label class=\"menu--label\" title=\"" + linkText + "\"><i class=\"menu--icon  fa fa-fw fa-user\"></i>"
 
-                           
+                            if (linkUrl == window.location.href)
+                                listItemInfo += "<a class=\"menu--link menu--link__active\" href=\"" + linkUrl + "\">" + linkText + "</a></label>";
+                            else
+
+                                listItemInfo += "<a class=\"menu--link\" href=\"" + linkUrl + "\">" + linkText + "</a></label>";
 
                             if (blHasSubMenu) {
                                
@@ -221,10 +243,17 @@ ns.LeftNav.GetContents = function ()
 
                                     var linkText = this.Title;
 
-                                    var linkUrl = this.Url;
+                                    var linkUrl = "#";
 
-                                    listItemInfo +=
-                                        "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link sub_menu--link__active\">" + linkText + "</a></li>"
+                                    if (this.Url)
+                                        linkUrl = this.Url.Url;
+
+                                   
+                                    if (linkUrl == window.location.href)
+                                        listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link sub_menu--link__active\">" + linkText + "</a></li>";
+                                    else
+
+                                        listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link\">" + linkText + "</a></li>";
 
                                 });
 
@@ -234,7 +263,7 @@ ns.LeftNav.GetContents = function ()
                             listItemInfo += "</li>"
 
                            
-
+                            nodeIndex++;
                           
 
                         });
@@ -323,10 +352,10 @@ var applyCSS = (function () {
         // clearInterval( tid );
         var siteURL = window.location.protocol + "//" + window.location.host + _spPageContextInfo.siteServerRelativeUrl;
 
-        $("head").append("<link rel='stylesheet' href='"+siteURL+"/Style%20Library/font-awesome.css' type='text/css' >");
-        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/vertical-responsive-menu.css' type='text/css' >");
-        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/normalize.css' type='text/css' >");
-        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/flynnbranding.css' type='text/css' >");
+        $("head").append("<link rel='stylesheet' href='"+siteURL+"/Style%20Library/FlynnBranding/CSS/font-awesome.css' type='text/css' >");
+        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/FlynnBranding/CSS/vertical-responsive-menu.css' type='text/css' >");
+        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/FlynnBranding/CSS/normalize.css' type='text/css' >");
+        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/FlynnBranding/CSS/flynnbranding.css' type='text/css' >");
         var querySelector = document.querySelector.bind(document);
 
         var nav = document.querySelector('.vertical_nav');
@@ -380,8 +409,23 @@ var applyCSS = (function () {
 
                 }, false);
 
+                for (var j = 0; j < subnavs.length; j++)
+                {
+                   // subnavs[j].classList.toggle('menu--subitens__opened');
+
+                }
+
+
+                var selectedLink = $('.sub_menu--link__active');
+               
+
             }
         }
+
+        var selectedLink = $('.sub_menu--link__active');
+        if (selectedLink != null && selectedLink.length>0)
+            selectedLink[0].parentNode.parentNode.parentNode.classList.toggle('menu--subitens__opened');
+
     }
 
 

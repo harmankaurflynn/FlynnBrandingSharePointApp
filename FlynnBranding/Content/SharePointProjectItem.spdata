@@ -7,5 +7,10 @@
     <ProjectItemFile Source="normalize.css" Target="Content\" Type="ElementFile" />
     <ProjectItemFile Source="vertical-responsive-menu.css" Target="Content\" Type="ElementFile" />
     <ProjectItemFile Source="flynnbranding.css" Target="Content\" Type="ElementFile" />
+    <ProjectItemFile Source="Font\fontawesome-webfont.eot" Target="Content\Font\" Type="ElementFile" />
+    <ProjectItemFile Source="Font\fontawesome-webfont.ttf" Target="Content\Font\" Type="ElementFile" />
+    <ProjectItemFile Source="Font\fontawesome-webfont.woff" Target="Content\Font\" Type="ElementFile" />
+    <ProjectItemFile Source="Font\fontawesome-webfont.woff2" Target="Content\Font\" Type="ElementFile" />
+    <ProjectItemFile Source="Font\fontawesome-webfont.svg" Target="Content\Font\" Type="ElementFile" />
   </Files>
 </ProjectItem>

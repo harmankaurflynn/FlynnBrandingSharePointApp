@@ -6,5 +6,10 @@
     <File Path="Content\normalize.css" Url="Content/normalize.css" ReplaceContent="TRUE" />
     <File Path="Content\vertical-responsive-menu.css" Url="Content/vertical-responsive-menu.css" ReplaceContent="TRUE" />
     <File Path="Content\flynnbranding.css" Url="Content/flynnbranding.css" ReplaceContent="TRUE" />
+    <File Path="Content\Font\fontawesome-webfont.eot" Url="Content/Font/fontawesome-webfont.eot" ReplaceContent="TRUE" />
+    <File Path="Content\Font\fontawesome-webfont.ttf" Url="Content/Font/fontawesome-webfont.ttf" ReplaceContent="TRUE" />
+    <File Path="Content\Font\fontawesome-webfont.woff" Url="Content/Font/fontawesome-webfont.woff" ReplaceContent="TRUE" />
+    <File Path="Content\Font\fontawesome-webfont.woff2" Url="Content/Font/fontawesome-webfont.woff2" ReplaceContent="TRUE" />
+    <File Path="Content\Font\fontawesome-webfont.svg" Url="Content/Font/fontawesome-webfont.svg" ReplaceContent="TRUE" />
   </Module>
 </Elements>
