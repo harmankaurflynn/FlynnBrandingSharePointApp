@@ -47,13 +47,13 @@ ns.BusinessDataAccess = function () { };
 // - Url: (string) Target Url
 // - Desc: (string) Description (tooltip)
 ns.BusinessDataAccess.NavLinkType = "NavLink";
-ns.BusinessDataAccess.NavLink = function (title, url, desc,parent,order) {
+ns.BusinessDataAccess.NavLink = function (title, url, desc, parent, order) {
     this.Type = ns.BusinessDataAccess.NavLinkType;
     this.Title = title;
     this.Url = url;
     this.Desc = desc;
     this.Parent = parent;
-    this.Order=order
+    this.Order = order
 };
 // A NavHeader represents a container for a group of Nav Nodes (links and/or headers)
 // - A NavHeader must have a title
@@ -251,18 +251,18 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
     // By design, we store/return a stale BDO if an exception occurs while building the fresh BDO; doing so allows the control to 
     // continue showing reasonable content; it also prevents a cascade of data source call attempts/failures.
     var storageItem = null;
-   // alert("in business layer");
+    // alert("in business layer");
     try {
         // If storage is in play, request the BDO from storage
         if (ns.BusinessDataAccess.UseStorage(storageOptions)) {
-           // alert("use storage");
+            // alert("use storage");
             // Return the BDO to the caller if it is still fresh; if the BDO is stale, keep it around in case we encounter an issue building a fresh BDO
             storageItem = ns.StorageManager.Get(storageOptions.storageMode, storageKey);
             if (storageItem && storageItem.hasExpired == false) {
                 // alert("expired");
                 console.log("not expired");
-               // deferred.resolve(storageItem.data);
-               // return deferred.promise();
+                // deferred.resolve(storageItem.data);
+                // return deferred.promise();
             }
         }
 
@@ -273,9 +273,9 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
         var leftNavMenu = new ns.BusinessDataAccess.LeftNavMenuData();
         // Query the Global Nav configuration list
 
-       // var queryText = '(Path:"' + ns.Configuration.PortalAdminSiteAbsoluteUrl + '/' + ns.Configuration.GlobalNavListWebRelativeUrl + '" AND contentclass=STS_ListItem_GenericList)';
+        // var queryText = '(Path:"' + ns.Configuration.PortalAdminSiteAbsoluteUrl + '/' + ns.Configuration.GlobalNavListWebRelativeUrl + '" AND contentclass=STS_ListItem_GenericList)';
 
-        var queryUrl = _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/GetByTitle('LeftNavigation')/items?$filter=IsActive%20eq%201&$select=Title,MenuItem,TargetURL,SortOrder,ParentMenuItem/Id,ParentMenuItem/Title&$expand=ParentMenuItem&$orderby=SortOrder";
+        var queryUrl = _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/GetByTitle('LeftNavigation')/items?$filter=IsActive%20eq%201&$select=Title,MenuItem,TargetURL,SortOrder,ParentMenuItem/Id,ParentMenuItem/Title&$expand=ParentMenuItem&$orderby=Title";
         console.log(queryUrl);
 
 
@@ -292,9 +292,7 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
 
         })
 
-        .done(function (data)
-
-        {
+        .done(function (data) {
             //alert("got ajax done");
             ns.LogMessage('ns.BusinessDataManager.LeftNavMenuData(): processing data response');
 
@@ -304,48 +302,48 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
 
             var leftNav = new ns.BusinessDataAccess.LeftNavMenuData();
 
-            
+
             var odataResults = data.d.results;
 
-            
 
-            if (odataResults && odataResults.length>0)
 
-            {
-               // alert("length greater");
+            if (odataResults && odataResults.length > 0) {
+                // alert("length greater");
                 var results = odataResults;
 
                 var numResults = results.length;
 
                 ns.LogMessage('ns.BusinessDataManager.LeftNavMenuData(): ' + numResults + ' results returned');
+                var j = 1;
 
-                for (var i = 0; i < numResults; i++)
-
-                {
+                for (var i = 0; i < numResults; i++) {
 
                     var result = results[i];
 
-                   
+
 
                     var linkText = result.Title;
 
                     var linkUrl = result.TargetURL;
                     var parentNode = result.ParentMenuItem.Title;
-                    var sortOrder=result.SortOrder
+                    var sortOrder = result.SortOrder
 
 
 
                     // For now, the nav data is simply a collection of Nav Links with no Nav Headers
-
-                    leftNav.Nodes[i] = new ns.BusinessDataAccess.NavLink(linkText, linkUrl, null,parentNode,sortOrder);
+                    if (result.SortOrder == 0) {
+                        leftNav.Nodes[0] = new ns.BusinessDataAccess.NavLink(linkText, linkUrl, null, parentNode, sortOrder);
+                    }
+                    else {
+                        leftNav.Nodes[j] = new ns.BusinessDataAccess.NavLink(linkText, linkUrl, null, parentNode, sortOrder);
+                        j++;
+                    }
 
                 }
 
             }
 
-            else
-
-            {
+            else {
                 //alert("no data");
 
                 ns.LogMessage('ns.BusinessDataManager.GetGlobalNavData(): no results returned');
@@ -360,9 +358,7 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
 
             // If storage is in play, store the resulting BDO and return it to the caller
 
-            if (ns.BusinessDataAccess.UseStorage(storageOptions))
-
-            {
+            if (ns.BusinessDataAccess.UseStorage(storageOptions)) {
 
                 ns.StorageManager.Set(storageOptions.storageMode, storageKey, leftNav, storageOptions.useSlidingExpiration, storageOptions.timeout);
 
@@ -372,16 +368,12 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
 
         })
 
-        .fail(function (xhr, status, error)
-
-        {
-            alert("error" + error);
+        .fail(function (xhr, status, error) {
+            alert("error " + error);
 
             ns.LogError('ns.BusinessDataManager.GetGlobalNavData(): failed to get data - Status=' + status + '; error=' + error);
 
-            if (storageItem)
-
-            {
+            if (storageItem) {
 
                 // Store the stale BDO and return it to the caller; doing so provides reasonable display content and prevents a cascade of data source call attempts/failures.
 
@@ -395,22 +387,18 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
 
             // TODO: instead of returning null, consider returning an ErrorData BDO if you wish to pass verbose error data to the caller.
 
-            deferred.resolve(storageItem ? storageItem.data : null);
+            deferred.reject(storageItem ? storageItem.data : null);
 
         });
 
     }
 
-    catch (ex)
-
-    {
+    catch (ex) {
         alert("catch" + ex.message);
 
         ns.LogError('ns.BusinessDataManager.GetGlobalNavData(): unexpected exception occurred; error=' + ex.message);
 
-        if (storageItem)
-
-        {
+        if (storageItem) {
 
             // Store the stale BDO and return it to the caller; doing so provides reasonable display content and prevents a cascade of data source call attempts/failures.
 
@@ -424,11 +412,11 @@ ns.BusinessDataAccess.GetLeftNavMenuData = function (storageOptions) {
 
         // TODO: instead of returning null, consider returning an ErrorData BDO if you wish to pass verbose error data to the caller.
 
-        deferred.resolve(storageItem ? storageItem.data : null);
+        deferred.reject(storageItem ? storageItem.data : null);
 
     }
 
-      
+
     return deferred.promise();
 };
 /// Consumes and persists an updated lightweight JSON Business Data Object for the Mega Menu control

@@ -12,7 +12,7 @@ var ns = CreateNamespace('FlynnBranding');
 ns.LeftNav = function () { };
 // How long shall we cache the HTML response? (specify a Prime Number)
 
-ns.LeftNav.ExpirationTimeoutInMinutes = "13";
+ns.LeftNav.ExpirationTimeoutInMinutes = "0";
 
 
 
@@ -21,23 +21,23 @@ $(window).load(function () {
         $.getScript("/_layouts/15/SP.Runtime.js", function () {
             $.getScript("/_layouts/15/SP.js", function () {
 
-             
+
                 //Type.registerNamespace('FlynnBranding');
-               // FlynnBranding.LeftNavigation = FlynnBranding.LeftNavigation || {};
+                // FlynnBranding.LeftNavigation = FlynnBranding.LeftNavigation || {};
 
                 ns.LeftNav.Render = function () {
 
                     var webProperties,
-                        
+
                     getWebPropertiesSucceeded = function () {
 
                         {
-                          
+
                             ns.LeftNav.GetContents();
 
-                           // $("#sideNavBox").empty();
+                            // $("#sideNavBox").empty();
 
-                                                  
+
 
                         }
 
@@ -51,7 +51,7 @@ $(window).load(function () {
 
                     return {
                         initializeLeftNav: function () {
-                            
+
                             var clientContext = SP.ClientContext.get_current();
                             var hostWeb = clientContext.get_web();
                             webProperties = hostWeb.get_allProperties();
@@ -63,7 +63,7 @@ $(window).load(function () {
 
                 if (typeof _spPageContextInfo != "undefined" && _spPageContextInfo != null) {
                     // MDS enabled
-                    
+
                     RegisterModuleInit(_spPageContextInfo.siteServerRelativeUrl + 'Style Library/leftNavMenu.js', ns.LeftNav.Render.initializeHeaderFooter);
                 }
                 // Run now on this page (and non-MDS scenarios)
@@ -78,10 +78,8 @@ $(window).load(function () {
 
 // Constructs the entire HTML rendering of the Control and injects the HTML into the control
 
-ns.LeftNav.GetContents = function ()
+ns.LeftNav.GetContents = function () {
 
-{
-    
 
     // Save the current control content as the fallback content in case we encounter any errors during processing; we will simply re-render the current content.
 
@@ -95,15 +93,13 @@ ns.LeftNav.GetContents = function ()
 
     // If current control content is not present, use default Html; optionally, insert a progress indicator while we request the BDO for the control. 
 
-    if (currentHtml == "")
-
-    {
+    if (currentHtml == "") {
         alert("empty");
         // Since current control content is not present, use the Default Html as the fallback content.
 
         fallbackHtml = ns.GlobalNav.DefaultHtml;
 
-    
+
 
         ////----------------------------------------------------------------------------
 
@@ -133,38 +129,32 @@ ns.LeftNav.GetContents = function ()
 
 
 
-    try
+    try {
 
-    {
-       
         // Request the BDO for the control. We use DurableStorage for Global Nav -- its content is not personalized/private
 
         ns.BusinessDataAccess.GetLeftNavMenuData({ storageMode: ns.StorageManager.DurableStorageMode, useSlidingExpiration: false, timeout: ns.LeftNav.ExpirationTimeoutInMinutes }).then(
 
-            
 
 
-            function (leftNavData)
 
-            {
-               
+            function (leftNavData) {
+
                 var currentUrl = window.location.href;
                 if (currentUrl.indexOf('/') > 0)
                     currentUrl = currentUrl.substring(currentUrl.indexOf('/') + 1);
 
                 //  construct the content HTML for the control using the data returned in the BDO
 
-                var contentHtml = "<header class=\"header clearfix\"><button type=\"button\" id=\"toggleMenu\" class=\"toggle_menu\"><i class=\"fa fa-bars\"></i></button></header>"+
-                    "<nav class=\"vertical_nav\">"+
+                var contentHtml = "<header class=\"header clearfix\"><button type=\"button\" id=\"toggleMenu\" class=\"toggle_menu\"><i class=\"fa fa-bars\"></i></button></header>" +
+                    "<nav class=\"vertical_nav\">" +
                     "<ul id=\"js-menu\" class=\"menu\">";
-                   
-               
 
 
 
-                if (leftNavData == null || leftNavData.Type == ns.BusinessDataAccess.ErrorDataType)
 
-                {
+
+                if (leftNavData == null || leftNavData.Type == ns.BusinessDataAccess.ErrorDataType) {
                     //alert("leftnavdata null")
 
                     // For some reason, a valid BDO was not returned; update the control instance with the fallback Html.
@@ -173,26 +163,20 @@ ns.LeftNav.GetContents = function ()
 
                 }
 
-                else
-
-                {
-                   // alert("left nav not null");
+                else {
+                    // alert("left nav not null");
                     // We have received a valid BDO; update the control instance with the BDO data.
 
-                    var nodeIndex=0;
+                    var nodeIndex = 0;
 
-                    if (leftNavData.Nodes.length > 0)
-
-                    {
+                    if (leftNavData.Nodes.length > 0) {
                         var leftNavMenu = leftNavData.Nodes.filter(function (p) { return p.Parent === undefined; });
-                       // var leftNavMenu = leftNavData.Nodes.filter(p => (p.Parent ===undefined));
-                       
+                        // var leftNavMenu = leftNavData.Nodes.filter(p => (p.Parent ===undefined));
+
 
                         var listItemInfo = "";
 
-                        $.each(leftNavMenu, function ()
-
-                        {
+                        $.each(leftNavMenu, function () {
 
                             var linkText = this.Title;
 
@@ -201,7 +185,7 @@ ns.LeftNav.GetContents = function ()
                             if (this.Url)
                                 linkUrl = this.Url.Url;
 
-                            
+
                             var blHasSubMenu = false;
                             //var leftNavSubMenu = leftNavData.Nodes.filter(p => (p.Parent == this.Title));
                             var leftNavSubMenu = leftNavData.Nodes.filter(function (p) { return p.Parent === linkText; });
@@ -210,9 +194,9 @@ ns.LeftNav.GetContents = function ()
 
                             if (blHasSubMenu)
                                 listItemInfo +=
-                              "<li class=\"menu--item  menu--item__has_sub_menu\">"
+                              "<li class=\"menu--item  menu--item__has_sub_menu  menu--subitens__opened\">"
                             else
-                                
+
                                 listItemInfo +=
                               "<li class=\"menu--item\">"
 
@@ -220,9 +204,9 @@ ns.LeftNav.GetContents = function ()
                             if (nodeIndex == 0)
                                 listItemInfo +=
                                "<label class=\"menu--label menu--label__home\" title=\"" + linkText + "\"><i class=\"menu--icon  fa fa-fw fa-user\"></i>"
-                                else
-                            listItemInfo +=
-                                "<label class=\"menu--label\" title=\"" + linkText + "\"><i class=\"menu--icon  fa fa-fw fa-user\"></i>"
+                            else
+                                listItemInfo +=
+                                    "<label class=\"menu--label\" title=\"" + linkText + "\"><i class=\"menu--icon  fa fa-fw fa-user\"></i>"
 
                             if (linkUrl == window.location.href)
                                 listItemInfo += "<a class=\"menu--link menu--link__active\" href=\"" + linkUrl + "\">" + linkText + "</a></label>";
@@ -231,7 +215,7 @@ ns.LeftNav.GetContents = function ()
                                 listItemInfo += "<a class=\"menu--link\" href=\"" + linkUrl + "\">" + linkText + "</a></label>";
 
                             if (blHasSubMenu) {
-                               
+
 
                                 listItemInfo +=
                                 "<ul class=\"sub_menu\">"
@@ -245,12 +229,12 @@ ns.LeftNav.GetContents = function ()
                                     if (this.Url)
                                         linkUrl = this.Url.Url;
 
-                                   
-                                    //if (linkUrl == window.location.href)
-                                       // listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link sub_menu--link__active\">" + linkText + "</a></li>";
-                                   // else
 
-                                       // listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link\">" + linkText + "</a></li>";
+                                    //if (linkUrl == window.location.href)
+                                    // listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link sub_menu--link__active\">" + linkText + "</a></li>";
+                                    // else
+
+                                    // listItemInfo += "<li class=\"sub_menu--item\"><a href=\"" + linkUrl + "\" target=\"_blank\" class=\"sub_menu--link\">" + linkText + "</a></li>";
 
                                     var blHasSubSubMenu = false;
                                     var leftNavSubSubMenu = leftNavData.Nodes.filter(function (p) { return p.Parent === linkText; });
@@ -268,7 +252,7 @@ ns.LeftNav.GetContents = function ()
                                 "<label class=\"menu--label\" title=\"" + linkText + "\">"
                                     if (linkUrl == window.location.href)
                                         listItemInfo += "<a href=\"" + linkUrl + "\"  class=\"sub_menu--link sub_menu--link__active\">" + linkText + "</a></label>";
-                                     else
+                                    else
                                         listItemInfo += "<a href=\"" + linkUrl + "\"  class=\"sub_menu--link\">" + linkText + "</a></label>";
 
                                     if (blHasSubSubMenu) {
@@ -300,24 +284,21 @@ ns.LeftNav.GetContents = function ()
 
                             listItemInfo += "</li>"
 
-                           
+
                             nodeIndex++;
-                          
+
 
                         });
 
-                       
+
 
                         contentHtml += listItemInfo.toString();
 
-                        contentHtml += "</ul><button id=\"collapse_menu\" class=\"collapse_menu\">"+
-                        "<i class=\"collapse_menu--icon  fa fa-fw\"></i><span class=\"collapse_menu--label\">Recolher menu</span></button></nav>";
-                        
+                        contentHtml += "</ul></nav>";
+
                     }
 
-                    else
-
-                    {
+                    else {
 
                         // We have received an empty BDO; update the control instance with the default HTML.
 
@@ -334,16 +315,14 @@ ns.LeftNav.GetContents = function ()
                 $('#sideNavBox').empty();
 
                 $('#sideNavBox').append(contentHtml);
-              
+
                 applyCSS();
-               
+
             },
 
 
 
-            function (sender, args)
-
-            {
+            function (sender, args) {
 
                 ns.LogError(args.get_message());
 
@@ -361,9 +340,7 @@ ns.LeftNav.GetContents = function ()
 
     }
 
-    catch (ex)
-
-    {
+    catch (ex) {
 
         // The BDO request failed; update the control instance with the fallback Html.
 
@@ -379,18 +356,18 @@ ns.LeftNav.GetContents = function ()
 
 
 var applyCSS = (function () {
-    
-   
+
+
     if (document.readyState !== 'complete') {
         alert(document.readyState);
-        
+
         applyCSS();
     }
     else {
         // clearInterval( tid );
         var siteURL = window.location.protocol + "//" + window.location.host + _spPageContextInfo.siteServerRelativeUrl;
 
-        $("head").append("<link rel='stylesheet' href='"+siteURL+"/Style%20Library/FlynnBranding/CSS/font-awesome.css' type='text/css' >");
+        $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/FlynnBranding/CSS/font-awesome.css' type='text/css' >");
         $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/FlynnBranding/CSS/vertical-responsive-menu.css' type='text/css' >");
         $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/FlynnBranding/CSS/normalize.css' type='text/css' >");
         $("head").append("<link rel='stylesheet' href='" + siteURL + "/Style%20Library/FlynnBranding/CSS/flynnbranding.css' type='text/css' >");
@@ -400,10 +377,10 @@ var applyCSS = (function () {
         var wrapper = document.querySelector('.wrapper');
 
         var menu = document.getElementById("js-menu");
-        
+
 
         var subnavs = menu.querySelectorAll('.menu--item__has_sub_menu');
-        var subsubnavs=menu.querySelectorAll('.sub_menu--item__has_sub_menu');
+        var subsubnavs = menu.querySelectorAll('.sub_menu--item__has_sub_menu');
 
         // Toggle menu click
         querySelector('.toggle_menu').onclick = function () {
@@ -416,22 +393,22 @@ var applyCSS = (function () {
 
 
         // Minify menu on menu_minifier click
-        querySelector('.collapse_menu').onclick = function () {
+        //querySelector('.collapse_menu').onclick = function () {
 
-            nav.classList.toggle('vertical_nav__minify');
+        //    nav.classList.toggle('vertical_nav__minify');
 
-            wrapper.classList.toggle('wrapper__minify');
+        //    wrapper.classList.toggle('wrapper__minify');
 
-            for (var j = 0; j < subnavs.length; j++) {
-                subnavs[j].classList.remove('menu--subitens__opened');
-            }
+        //    for (var j = 0; j < subnavs.length; j++) {
+        //        //subnavs[j].classList.remove('menu--subitens__opened');
+        //    }
 
 
-            for (var j = 0; j < subsubnavs.length; j++) {
-                subsubnavs[j].classList.remove('sub_menu--subitens__opened');
-            }
+        //    for (var j = 0; j < subsubnavs.length; j++) {
+        //       // subsubnavs[j].classList.remove('sub_menu--subitens__opened');
+        //    }
 
-        };
+        //};
 
 
         // Open Sub Menu
@@ -444,8 +421,9 @@ var applyCSS = (function () {
 
                     for (var j = 0; j < subnavs.length; j++) {
 
-                        if (e.target.offsetParent != subnavs[j])
-                            subnavs[j].classList.remove('menu--subitens__opened');
+                        if (e.target.offsetParent != subnavs[j]) {
+                            // subnavs[j].classList.remove('menu--subitens__opened');
+                        }
 
                     }
 
@@ -453,15 +431,14 @@ var applyCSS = (function () {
 
                 }, false);
 
-                for (var j = 0; j < subnavs.length; j++)
-                {
-                   // subnavs[j].classList.toggle('menu--subitens__opened');
+                for (var j = 0; j < subnavs.length; j++) {
+                    // subnavs[j].classList.toggle('menu--subitens__opened');
 
                 }
 
 
                 var selectedLink = $('.sub_menu--link__active');
-               
+
 
             }
         }
@@ -469,16 +446,16 @@ var applyCSS = (function () {
         for (var i = 0; i < subsubnavs.length; i++) {
 
             if (subsubnavs[i].classList.contains('sub_menu--item__has_sub_menu')) {
-                
-               
+
+
 
                 subsubnavs[i].querySelector('.sub_menu--link').addEventListener('click', function (e) {
 
                     for (var j = 0; j < subsubnavs.length; j++) {
-                        
+
                         if (e.target.offsetParent != subsubnavs[j])
                             subsubnavs[j].classList.remove('sub_menu--subitens__opened');
-                       
+
 
                     }
 
@@ -499,7 +476,7 @@ var applyCSS = (function () {
         }
 
         var selectedLink = $('.sub_menu--link__active');
-        if (selectedLink != null && selectedLink.length>0)
+        if (selectedLink != null && selectedLink.length > 0)
             selectedLink[0].parentNode.parentNode.parentNode.classList.toggle('menu--subitens__opened');
 
         var selectedsubLink = $('.sub_sub_menu--link__active');

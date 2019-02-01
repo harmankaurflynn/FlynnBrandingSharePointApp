@@ -23,6 +23,7 @@ Flynn.AddInUnInstall.HostWebRemoveSetup = function () {
     var hostWebUrl,
        appWebUrl,
        hostWebContext,
+        hostparentWebContext,
         hostWebRelativeURL,
        appWebContext,
        hostWebCustomActions,
@@ -136,7 +137,7 @@ Flynn.AddInUnInstall.HostWebRemoveSetup = function () {
 
 
 
-           var ofile = hostWebContext.get_web().getFileByServerRelativeUrl(hostWebRelativeURL + serverRelativeUrl + "/" + filename)
+           var ofile = hostparentWebContext.get_web().getFileByServerRelativeUrl(hostWebRelativeURL + serverRelativeUrl + "/" + filename)
            if (ofile)
                ofile.deleteObject();
 
@@ -157,14 +158,15 @@ Flynn.AddInUnInstall.HostWebRemoveSetup = function () {
        },
 
     init = function () {
-        hostWebUrl = decodeURIComponent(FlynnU.Utility.Common.getQueryStringParameter('SPHostUrl'));
+        hostWebUrl = "https://devportal.flynncompanies.com";// decodeURIComponent(FlynnU.Utility.Common.getQueryStringParameter('SPHostUrl'));
         appWebUrl = decodeURIComponent(FlynnU.Utility.Common.getQueryStringParameter('SPAppWebUrl'));
-        if (hostWebUrl.split("://")[1].split('/').length > 1)
-            hostWebRelativeURL = hostWebUrl.split("://")[1].split('/')[1];
-        else
-            hostWebRelativeURL = "/";
+        // if (hostWebUrl.split("://")[1].split('/').length > 1)
+        // hostWebRelativeURL = hostWebUrl.split("://")[1].split('/')[1];
+        //else
+        hostWebRelativeURL = "/sharedservices/safety";
         appWebContext = new SP.ClientContext(appWebUrl);
-        hostWebContext = new SP.AppContextSite(appWebContext, hostWebUrl);
+        hostWebContext = new SP.AppContextSite(appWebContext, "https://devportal.flynncompanies.com/sharedservices/safety");
+        hostparentWebContext = new SP.AppContextSite(appWebContext, "https://devportal.flynncompanies.com/sharedservices/safety");
     }
 
     return {
@@ -184,6 +186,7 @@ Flynn.AddInInstall.HostWebSetup = function () {
     var hostWebUrl,
         appWebUrl,
         hostWebContext,
+        hostparentWebContext,
         appWebContext,
         hostWebCustomActions,
         collUserCustomAction,
@@ -210,8 +213,8 @@ Flynn.AddInInstall.HostWebSetup = function () {
     createFolderinhostWeb=function(serverRelativeUrl, foldername)
     {
         var deferred=new $.Deferred();
-        var parentFolder = hostWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl);
-        var ofolder = hostWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl + "/" + foldername);
+        var parentFolder = hostparentWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl);
+        var ofolder = hostparentWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl + "/" + foldername);
        // if (ofolder != null)
            // parentFolder.get_folders().add(foldername);
         appWebContext.load(ofolder);
@@ -253,7 +256,7 @@ Flynn.AddInInstall.HostWebSetup = function () {
         createInfo.set_url(filename);
 
 
-        var ofile = hostWebContext.get_web().getFileByServerRelativeUrl(hostWebRelativeURL + serverRelativeUrl + "/" + filename)
+        var ofile = hostparentWebContext.get_web().getFileByServerRelativeUrl(hostWebRelativeURL + serverRelativeUrl + "/" + filename)
         appWebContext.load(ofile);
         appWebContext.executeQueryAsync(
             Function.createDelegate(this, function () {
@@ -263,7 +266,7 @@ Flynn.AddInInstall.HostWebSetup = function () {
                     ofile.checkOut();
                     // Not checked out, do nothing
                 }
-                var files = hostWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl).get_files();
+                var files = hostparentWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl).get_files();
                 var file = files.add(createInfo);
 
                 appWebContext.load(file, 'CheckOutType');
@@ -286,7 +289,7 @@ Flynn.AddInInstall.HostWebSetup = function () {
             Function.createDelegate(this, function (sender, args) {
                 /* File doesn't exist. */
                 //alert(args.get_message());
-                var files = hostWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl).get_files();
+                var files = hostparentWebContext.get_web().getFolderByServerRelativeUrl(serverRelativeUrl).get_files();
                 var file = files.add(createInfo);
 
                 appWebContext.load(file, 'CheckOutType');
@@ -332,12 +335,12 @@ Flynn.AddInInstall.HostWebSetup = function () {
  onActionSucceeded = function () {
      var promise = FlynnU.Utility.Common.deleteCustomAction(appWebContext,hostWebCustomActions);
      promise.then(function () {
-         activateUserCustomAction(10023, 'jquery-1.9.1.min.js', "jquery", false);
-         activateUserCustomAction(10024, 'utility.js', "utilityjs", false);
+        // activateUserCustomAction(10023, 'jquery-1.9.1.min.js', "jquery", false);
+        // activateUserCustomAction(10024, 'utility.js', "utilityjs", false);
 
-         activateUserCustomAction(10026, 'storageManager.js', "storageManagerjs", false);
-         activateUserCustomAction(10027, 'businessDataAccess.js', "businessdataaccess", false);
-         activateUserCustomAction(10028, 'leftNavMenu.js', "leftnavjs", false);
+        // activateUserCustomAction(10026, 'storageManager.js', "storageManagerjs", false);
+       //  activateUserCustomAction(10027, 'businessDataAccess.js', "businessdataaccess", false);
+       //  activateUserCustomAction(10028, 'leftNavMenu.js', "leftnavjs", false);
 
 
          // activateUserCustomAction(10029, 'vertical-responsive-menu.css',"responsivecss",true);
@@ -409,14 +412,15 @@ Flynn.AddInInstall.HostWebSetup = function () {
 
 
     initt = function () {
-        hostWebUrl = decodeURIComponent(FlynnU.Utility.Common.getQueryStringParameter('SPHostUrl'));
+        hostWebUrl = "https://devportal.flynncompanies.com";// decodeURIComponent(FlynnU.Utility.Common.getQueryStringParameter('SPHostUrl'));
         appWebUrl = decodeURIComponent(FlynnU.Utility.Common.getQueryStringParameter('SPAppWebUrl'));
-        if (hostWebUrl.split("://")[1].split('/').length > 1)
-            hostWebRelativeURL = hostWebUrl.split("://")[1].split('/')[1];
-        else
-            hostWebRelativeURL = "/";
+       // if (hostWebUrl.split("://")[1].split('/').length > 1)
+           // hostWebRelativeURL = hostWebUrl.split("://")[1].split('/')[1];
+        //else
+        hostWebRelativeURL = "/sharedservices/safety";
         appWebContext = new SP.ClientContext(appWebUrl);
-        hostWebContext = new SP.AppContextSite(appWebContext, hostWebUrl);
+        hostWebContext = new SP.AppContextSite(appWebContext, "https://devportal.flynncompanies.com/sharedservices/safety");
+        hostparentWebContext = new SP.AppContextSite(appWebContext, "https://devportal.flynncompanies.com");
     }
 
     return {

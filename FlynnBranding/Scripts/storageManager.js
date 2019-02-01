@@ -92,17 +92,13 @@ ns.StorageManager.CookieStorageMode = "cookie";     // item uses Cookie Storage 
 
 
 
-ns.StorageManager.SetStorageMode = function (storageMode)
-
-{
+ns.StorageManager.SetStorageMode = function (storageMode) {
 
     ns.StorageManager.Storage = null;
 
     ns.StorageManager.StorageName = null;
 
-    if (storageMode.toLowerCase() == ns.StorageManager.DurableStorageMode.toLowerCase())
-
-    {
+    if (storageMode.toLowerCase() == ns.StorageManager.DurableStorageMode.toLowerCase()) {
 
         ns.StorageManager.Storage = localStorage;
 
@@ -110,9 +106,7 @@ ns.StorageManager.SetStorageMode = function (storageMode)
 
     }
 
-    else if (storageMode.toLowerCase() == ns.StorageManager.SessionStorageMode.toLowerCase())
-
-    {
+    else if (storageMode.toLowerCase() == ns.StorageManager.SessionStorageMode.toLowerCase()) {
 
         ns.StorageManager.Storage = sessionStorage;
 
@@ -122,9 +116,7 @@ ns.StorageManager.SetStorageMode = function (storageMode)
 
         // TODO: implement cookie storage
 
-    else if (storageMode.toLowerCase() == ns.StorageManager.CookieStorageMode.toLowerCase())
-
-    {
+    else if (storageMode.toLowerCase() == ns.StorageManager.CookieStorageMode.toLowerCase()) {
 
         ns.LogError('ns.StorageManager.SetStorageMode(): Not Implemented StorageMode [storageMode=' + storageMode + ']');
 
@@ -134,9 +126,7 @@ ns.StorageManager.SetStorageMode = function (storageMode)
 
     }
 
-    else
-
-    {
+    else {
 
         ns.LogError('ns.StorageManager.SetStorageMode(): Invalid StorageMode [storageMode=' + storageMode + ']');
 
@@ -148,15 +138,11 @@ ns.StorageManager.SetStorageMode = function (storageMode)
 
 // Removes the specified custom data element from storage
 
-ns.StorageManager.ClearItem = function (storageMode, storageKey)
-
-{
+ns.StorageManager.ClearItem = function (storageMode, storageKey) {
 
     ns.StorageManager.SetStorageMode(storageMode);
 
-    if (storageKey)
-
-    {
+    if (storageKey) {
 
         ns.LogMessage('ns.StorageManager.ClearItem(): Clearing item in ' + ns.StorageManager.StorageName + ' [key=' + storageKey + ']');
 
@@ -168,17 +154,13 @@ ns.StorageManager.ClearItem = function (storageMode, storageKey)
 
 // Removes all custom data elements matching the specifed storageKey wildcard from storage
 
-ns.StorageManager.ClearItems = function (storageMode, storageKeyWildcard)
-
-{
+ns.StorageManager.ClearItems = function (storageMode, storageKeyWildcard) {
 
     ns.StorageManager.SetStorageMode(storageMode);
 
 
 
-    if (storageKeyWildcard)
-
-    {
+    if (storageKeyWildcard) {
 
         ns.LogMessage('ns.StorageManager.ClearItems(): Clearing items in ' + ns.StorageManager.StorageName + ' that match [keyWildcard=' + storageKeyWildcard + '*]');
 
@@ -194,15 +176,11 @@ ns.StorageManager.ClearItems = function (storageMode, storageKeyWildcard)
 
         // Note: we intentionally avoid the use of a callback while we traverse the store; we want to ensure a complete pass before we start removing items.
 
-        for (var i = 0; i < length; i++)
-
-        {
+        for (var i = 0; i < length; i++) {
 
             var storageKey = ns.StorageManager.Storage.key(i);
 
-            if (storageKey.startsWith(storageKeyWildcard))
-
-            {
+            if (storageKey.startsWith(storageKeyWildcard)) {
 
                 ns.LogMessage('ns.StorageManager.ClearItems(): Found match in ' + ns.StorageManager.StorageName + ' [key=' + storageKey + ']');
 
@@ -214,25 +192,19 @@ ns.StorageManager.ClearItems = function (storageMode, storageKeyWildcard)
 
 
 
-        if (storageKeys.length == 0)
-
-        {
+        if (storageKeys.length == 0) {
 
             ns.LogMessage('ns.StorageManager.ClearItems(): No matches found in ' + ns.StorageManager.StorageName);
 
         }
 
-        else
-
-        {
+        else {
 
             // walk the list of saved keys and remove the corresponding custom data element from storage; OK to use a callback here if you wish...
 
             ns.LogMessage('ns.StorageManager.ClearItems(): Processing matches...');
 
-            for (var i = 0; i < storageKeys.length; i++)
-
-            {
+            for (var i = 0; i < storageKeys.length; i++) {
 
                 ns.LogMessage('ns.StorageManager.ClearItems(): Clearing item in ' + ns.StorageManager.StorageName + ' [key=' + storageKeys[i] + ']');
 
@@ -250,9 +222,7 @@ ns.StorageManager.ClearItems = function (storageMode, storageKeyWildcard)
 
 // Commits the specified custom data element to storage using the specified storage options
 
-ns.StorageManager.Set = function (storageMode, storageKey, data, useSliding, timeout)
-
-{
+ns.StorageManager.Set = function (storageMode, storageKey, data, useSliding, timeout) {
 
     ns.StorageManager.SetStorageMode(storageMode);
 
@@ -268,15 +238,11 @@ ns.StorageManager.Set = function (storageMode, storageKey, data, useSliding, tim
 
 // returns null if the data element is not in storage; otherwise, response.data holds the data and response.hasExpired indicates freshness 
 
-ns.StorageManager.Get = function (storageMode, storageKey)
-
-{
+ns.StorageManager.Get = function (storageMode, storageKey) {
 
     ns.StorageManager.SetStorageMode(storageMode);
 
-    if (storageKey)
-
-    {
+    if (storageKey) {
 
         ns.LogMessage('ns.StorageManager.Get(): Looking for item in ' + ns.StorageManager.StorageName + ' [key=' + storageKey + ']');
 
@@ -284,9 +250,7 @@ ns.StorageManager.Get = function (storageMode, storageKey)
 
 
 
-        if (persistedData == null)
-
-        {
+        if (persistedData == null) {
 
             ns.LogMessage('ns.StorageManager.Get(): Item NOT found in ' + ns.StorageManager.StorageName + ' [key=' + storageKey + ']');
 
@@ -302,9 +266,7 @@ ns.StorageManager.Get = function (storageMode, storageKey)
 
 
 
-        if (persistedData.HasExpired())
-
-        {
+        if (persistedData.HasExpired()) {
 
             ns.LogMessage('ns.StorageManager.Get(): Item has EXPIRED [key=' + storageKey + ']');
 
@@ -318,9 +280,7 @@ ns.StorageManager.Get = function (storageMode, storageKey)
 
         // If this item uses a sliding expiration policy, update its LastAccessOn property to reset the expiration timer
 
-        if (persistedData.UseSliding)
-
-        {
+        if (persistedData.UseSliding) {
 
             ns.LogMessage('ns.StorageManager.Get(): Restarting sliding expiration timer for item [key=' + storageKey + ']');
 
@@ -342,13 +302,9 @@ ns.StorageManager.Get = function (storageMode, storageKey)
 
 
 
-ns.StorageManager.SetPersistedData = function (storageKey, persistedData)
+ns.StorageManager.SetPersistedData = function (storageKey, persistedData) {
 
-{
-
-    try
-
-    {
+    try {
 
         //TODO: ensure ns.StorageManager.Storage.remainingSpace > length of JSON.stringify(persistedData)
 
@@ -360,13 +316,9 @@ ns.StorageManager.SetPersistedData = function (storageKey, persistedData)
 
     }
 
-    catch (ex)
+    catch (ex) {
 
-    {
-
-        if (ex.name == 'QuotaExceededError')
-
-        {
+        if (ex.name == 'QuotaExceededError') {
 
             // We could not insert the item into the cache because the cache is full.
 
@@ -384,9 +336,7 @@ ns.StorageManager.SetPersistedData = function (storageKey, persistedData)
 
 
 
-ns.StorageManager.ConstructPersistedData = function (storageKey, data, useSliding, timeout)
-
-{
+ns.StorageManager.ConstructPersistedData = function (storageKey, data, useSliding, timeout) {
 
     var persistedData = new ns.PersistedData();
 
@@ -400,9 +350,7 @@ ns.StorageManager.ConstructPersistedData = function (storageKey, data, useSlidin
 
 
 
-    if (useSliding && timeout)
-
-    {
+    if (useSliding && timeout) {
 
         persistedData.Timeout = timeout;
 
@@ -410,9 +358,7 @@ ns.StorageManager.ConstructPersistedData = function (storageKey, data, useSlidin
 
     }
 
-    else
-
-    {
+    else {
 
         persistedData.Timeout = timeout;
 
