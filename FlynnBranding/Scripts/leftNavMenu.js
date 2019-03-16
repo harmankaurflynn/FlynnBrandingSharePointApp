@@ -15,8 +15,9 @@ ns.LeftNav = function () { };
 ns.LeftNav.ExpirationTimeoutInMinutes = "0";
 
 
-
-$(window).load(function () {
+console.log("start " + new Date().toLocaleString());
+$(document).ready(function () {
+    console.log("load " + new Date().toLocaleString());
     $.getScript("/_layouts/15/MicrosoftAjax.js", function () {
         $.getScript("/_layouts/15/SP.Runtime.js", function () {
             $.getScript("/_layouts/15/SP.js", function () {
@@ -489,4 +490,3 @@ var applyCSS = (function () {
 
 
 });
-
